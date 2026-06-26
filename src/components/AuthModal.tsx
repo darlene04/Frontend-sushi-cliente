@@ -3,7 +3,6 @@ import { LoaderCircle, X } from "lucide-react";
 import {
   loginCustomer,
   registerCustomer,
-  saveSession,
   type AuthSession,
 } from "../lib/auth";
 
@@ -69,7 +68,6 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
         email: email.trim().toLowerCase(),
       };
 
-      saveSession(session);
       onAuthenticated(session);
       onClose();
     } catch (err) {

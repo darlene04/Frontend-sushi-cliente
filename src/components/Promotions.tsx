@@ -3,6 +3,7 @@ import { Minus, Plus, X } from "lucide-react";
 import image1 from "../images/image1.png";
 import image2 from "../images/image2.png";
 import image3 from "../images/image3.png";
+import { useShop } from "../context/ShopContext";
 
 interface ProductOption {
   name: string;
@@ -30,7 +31,7 @@ const products: Product[] = [
     price: "S/ 62.90",
     originalPrice: "S/ 69.90",
     discount: 10,
-    image: image1,
+    image: image2,
     detailPrice: "S/ 62.90",
     requiredLabel: "Escoge 2 sabores de tus maki:",
     requiredHelper: "Seleccione 2",
@@ -52,7 +53,7 @@ const products: Product[] = [
     price: "S/ 25.00",
     originalPrice: "S/ 33.00",
     discount: 24,
-    image: image2,
+    image: image1,
     detailPrice: "S/ 34.90",
     requiredLabel: "Escoge tu poke y bebida:",
     requiredHelper: "Seleccione 2",
@@ -90,10 +91,15 @@ function formatCount(count: number) {
   return count.toString();
 }
 
+function parsePrice(value: string) {
+  return Number.parseFloat(value.replace("S/", "").trim());
+}
+
 export default function Promotions() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, number>>({});
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useShop();
 
   useEffect(() => {
     if (!selectedProduct) return;
@@ -125,49 +131,67 @@ export default function Promotions() {
     });
   };
 
+  const addProductToCart = (product: Product, nextQuantity = 1) => {
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      image: product.image,
+      unitPrice: parsePrice(product.detailPrice),
+      quantity: nextQuantity,
+      options: Object.entries(selectedOptions).map(([name, qty]) => ({ name, qty })),
+    });
+  };
+
   return (
     <>
-      <section className="bg-black px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+      <section className="bg-black px-4 pb-8 pt-3 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <h2 className="mb-6 text-3xl font-semibold tracking-tight text-white">Promociones</h2>
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+          <h2 className="mb-5 text-[2.1rem] font-semibold tracking-tight text-white">Promociones</h2>
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
           {products.map((product) => (
             <div
               key={product.id}
-              className="group flex min-h-[255px] cursor-pointer overflow-hidden rounded-2xl border border-white/12 bg-[#141414] text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-all hover:border-white/20 hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
+              className="group flex min-h-[210px] cursor-pointer overflow-hidden rounded-2xl border border-white/12 bg-[#141414] text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-all hover:border-white/20 hover:shadow-[0_18px_45px_rgba(0,0,0,0.35)]"
               onClick={() => openProductDetail(product)}
             >
-              <div className="relative w-[44%] min-w-[178px] overflow-hidden bg-[#101010]">
+              <div className="relative w-[41%] min-w-[150px] overflow-hidden bg-[#101010]">
                 <img
                   src={product.image}
                   alt={product.name}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                   loading="lazy"
                 />
-                <span className="absolute top-4 left-4 z-10 rounded-full bg-white px-3 py-1 text-[0.9rem] leading-none font-semibold text-[#1c1c1c]">
+                <span className="absolute top-3 left-3 z-10 rounded-full bg-white px-3 py-1 text-[0.85rem] leading-none font-semibold text-[#1c1c1c]">
                   -{product.discount}%
                 </span>
               </div>
 
-              <div className="flex flex-1 flex-col p-5">
-                <h3 className="mb-3 max-w-[13ch] text-[1rem] leading-[1.15] font-semibold tracking-tight text-white sm:text-[1.1rem]">
+              <div className="flex flex-1 flex-col p-4">
+                <h3 className="mb-2 max-w-[14ch] text-[0.92rem] leading-[1.15] font-semibold tracking-tight text-white sm:text-[0.98rem]">
                   {product.name}
                 </h3>
-                <p className="mb-5 max-w-[24ch] flex-1 text-[0.82rem] leading-7 text-white/80">
+                <p className="mb-4 max-w-[26ch] flex-1 text-[0.72rem] leading-6 text-white/80">
                   {product.description}
                 </p>
                 <div className="mt-auto flex items-end justify-between gap-4">
                   <div className="flex items-end gap-3">
-                    <p className="text-[0.95rem] leading-none font-medium text-white">{product.price}</p>
-                    <p className="text-[0.8rem] leading-none text-white/45 line-through">
+                    <p className="text-[0.82rem] leading-none font-medium text-white">{product.price}</p>
+                    <p className="text-[0.72rem] leading-none text-white/45 line-through">
                       {product.originalPrice}
                     </p>
                   </div>
                   <button
-                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-[1.9rem] leading-none font-light text-[#1a1a1a] transition-transform hover:scale-105"
+                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white text-[1.6rem] leading-none font-light text-[#1a1a1a] transition-transform hover:scale-105"
                     onClick={(event) => {
                       event.stopPropagation();
-                      openProductDetail(product);
+                      addToCart({
+                        productId: product.id,
+                        name: product.name,
+                        image: product.image,
+                        unitPrice: parsePrice(product.detailPrice),
+                        quantity: 1,
+                        options: [],
+                      });
                     }}
                   >
                     +
@@ -275,7 +299,14 @@ export default function Promotions() {
                     </button>
                   </div>
 
-                  <button className="flex h-14 flex-1 items-center justify-between rounded-xl bg-white px-6 text-xl font-medium text-black transition-colors hover:bg-white/90">
+                  <button
+                    className="flex h-14 flex-1 items-center justify-between rounded-xl bg-white px-6 text-xl font-medium text-black transition-colors hover:bg-white/90"
+                    onClick={() => {
+                      if (!selectedProduct) return;
+                      addProductToCart(selectedProduct, quantity);
+                      closeProductDetail();
+                    }}
+                  >
                     <span>Agregar</span>
                     <span>{selectedProduct.detailPrice}</span>
                   </button>
