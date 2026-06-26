@@ -14,7 +14,6 @@ export default function App() {
         <Promotions />
       </main>
 
-      {/* WhatsApp floating button */}
       <a
         href="https://wa.me/"
         target="_blank"
