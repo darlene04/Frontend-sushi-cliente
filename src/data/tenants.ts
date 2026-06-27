@@ -10,7 +10,7 @@ export interface TenantOption {
 
 export const TENANTS: TenantOption[] = [
   {
-    id: "la-marina",
+    id: "mrsushi-lamarina",
     name: "Mr. Sushi - La Marina",
     address: "Avenida de la Marina 2530, San Miguel, Perú",
     district: "San Miguel",
@@ -19,7 +19,7 @@ export const TENANTS: TenantOption[] = [
     coverageLabel: "San Miguel",
   },
   {
-    id: "mall-del-sur",
+    id: "mrsushi-malldelsur",
     name: "Mr. Sushi - Mall del Sur",
     address: "Avenida Pedro Miotta 1011, San Juan de Miraflores, Perú",
     district: "San Juan de Miraflores",
@@ -28,7 +28,7 @@ export const TENANTS: TenantOption[] = [
     coverageLabel: "SJM",
   },
   {
-    id: "espinar",
+    id: "mrsushi-espinar",
     name: "Mr. Sushi - Espinar",
     address: "Avenida Comandante Espinar 320, Miraflores, Perú",
     district: "Miraflores",
@@ -37,7 +37,7 @@ export const TENANTS: TenantOption[] = [
     coverageLabel: "Miraflores",
   },
   {
-    id: "mega-plaza",
+    id: "mrsushi-megaplaza",
     name: "Mr. Sushi - Mega Plaza",
     address: "Avenida Alfredo Mendiola 3698, San Martín de Porres, Perú",
     district: "San Martín de Porres",
