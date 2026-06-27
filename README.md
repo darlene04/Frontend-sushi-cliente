@@ -1,76 +1,131 @@
-# Mr. Sushi - Frontend Cliente
+# Mr. Sushi — Frontend Cliente
 
-Frontend de una interfaz tipo tienda para Mr. Sushi. El proyecto muestra una pagina principal con barra de navegacion, selector de ubicacion, carrito, banner promocional, seccion de puntos Neki y tarjetas de promociones.
+Aplicación web de pedidos para clientes de Mr. Sushi. Permite explorar promociones, personalizar productos, seleccionar un local, administrar el carrito y enviar pedidos al backend. Los usuarios registrados también pueden consultar el estado de sus pedidos.
 
-## Tecnologias usadas
+## Funcionalidades actuales
 
-- React
+- Página principal responsive con navbar, banner principal, Neki Puntos y promociones.
+- Detalle de productos con selección de opciones y cantidades.
+- Carrito persistente por usuario y local mediante `localStorage`.
+- Selector de local con dirección, teléfono, horario y zona de cobertura.
+- Checkout con datos del cliente y envío del pedido al backend.
+- Registro, inicio y cierre de sesión.
+- Historial y seguimiento del estado de pedidos para usuarios autenticados.
+- Navegación entre inicio, locales y pedidos mediante la History API.
+- Acceso flotante a WhatsApp.
+
+## Tecnologías
+
+- React 19
 - TypeScript
-- Vite
-- Tailwind CSS
-- Lucide React para iconos
+- Vite 8
+- Tailwind CSS 4
+- Lucide React
+- ESLint
 
-## Avance actual
+## Requisitos
 
-- Navbar con logo, accesos principales, login, buscador, categorias y carrito.
-- Banner principal con imagen promocional y efecto parallax en escritorio.
-- Banner de Neki Puntos con boton para unirse.
-- Grid de promociones con imagen, descuento, descripcion, precio actual, precio anterior y boton para agregar.
-- Boton flotante de WhatsApp.
+- Node.js compatible con Vite 8
+- npm
+- Una URL disponible del backend para utilizar autenticación, checkout e historial
+
+## Instalación
+
+1. Instala las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+2. Crea el archivo de variables de entorno:
+
+   ```bash
+   Copy-Item .env.example .env
+   ```
+
+   En macOS o Linux:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Configura la URL base de la API en `.env`:
+
+   ```env
+   VITE_API_BASE_URL=https://{api-id}.execute-api.us-east-1.amazonaws.com/dev
+   ```
+
+4. Inicia el servidor de desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+## Integración con el backend
+
+El frontend consume los siguientes endpoints a partir de `VITE_API_BASE_URL`:
+
+| Método | Endpoint | Uso |
+| --- | --- | --- |
+| `POST` | `/auth/register` | Registrar un cliente |
+| `POST` | `/auth/login` | Iniciar sesión y obtener el token |
+| `POST` | `/orders` | Crear un pedido |
+| `GET` | `/orders?mine=true` | Consultar los pedidos del usuario autenticado |
+
+Las solicitudes de pedidos incluyen el local seleccionado, los datos de entrega, los productos y sus opciones. Cuando existe una sesión, el token se envía como `Bearer token`.
+
+Sin `VITE_API_BASE_URL` la interfaz puede visualizarse y el carrito funciona localmente, pero no estarán disponibles la autenticación, el envío de pedidos ni el historial.
+
+## Rutas
+
+| Ruta | Vista |
+| --- | --- |
+| `/` | Inicio y promociones |
+| `/locales` | Locales y cobertura |
+| `/mis-pedidos` | Historial y seguimiento de pedidos |
+
+La navegación se implementa en el cliente con la History API. Al desplegar la aplicación, el servidor debe redirigir estas rutas a `index.html`.
 
 ## Estructura principal
 
 ```text
 src/
-  components/
-    HeroBanner.tsx
-    Navbar.tsx
-    PointsBanner.tsx
-    Promotions.tsx
-  images/
-  assets/
-  App.tsx
-  main.tsx
-  index.css
-```
-
-## Instalacion
-
-Instalar dependencias:
-
-```bash
-npm install
-```
-
-Ejecutar en modo desarrollo:
-
-```bash
-npm run dev
-```
-
-Generar version de produccion:
-
-```bash
-npm run build
-```
-
-Previsualizar la version generada:
-
-```bash
-npm run preview
+├── assets/                 # Recursos generales
+├── components/
+│   ├── AuthModal.tsx       # Registro e inicio de sesión
+│   ├── CartDrawer.tsx      # Carrito y checkout
+│   ├── LocationsCoverage.tsx
+│   ├── Navbar.tsx
+│   ├── OrderHistory.tsx    # Historial y seguimiento
+│   ├── Promotions.tsx      # Catálogo y detalle de productos
+│   └── TenantSelectorModal.tsx
+├── context/
+│   └── ShopContext.tsx     # Sesión, local seleccionado y carrito
+├── data/
+│   └── tenants.ts          # Información de locales
+├── images/                 # Imágenes de productos y banners
+├── lib/
+│   ├── auth.ts             # Cliente de autenticación
+│   └── orders.ts           # Cliente de pedidos
+├── App.tsx                 # Vistas y navegación
+├── index.css
+└── main.tsx
 ```
 
 ## Scripts disponibles
 
-- `npm run dev`: inicia el servidor de desarrollo con Vite.
-- `npm run build`: compila TypeScript y genera los archivos finales en `dist`.
-- `npm run lint`: ejecuta ESLint para revisar el codigo.
-- `npm run preview`: levanta una vista previa de la version compilada.
+| Comando | Descripción |
+| --- | --- |
+| `npm run dev` | Inicia Vite en modo desarrollo |
+| `npm run build` | Valida TypeScript y genera la aplicación en `dist/` |
+| `npm run lint` | Analiza el código con ESLint |
+| `npm run preview` | Sirve localmente la compilación de producción |
 
-## Pendientes sugeridos
+## Compilación de producción
 
-- Conectar los botones de navegacion con rutas reales.
-- Agregar funcionalidad al carrito.
-- Configurar el enlace real de WhatsApp.
-- Reemplazar las imagenes externas de promociones por imagenes definitivas del negocio.
-- Mejorar la adaptacion responsive segun las pantallas objetivo.
+```bash
+npm run build
+npm run preview
+```
+
+Los archivos generados quedan en `dist/`.

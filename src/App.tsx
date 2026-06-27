@@ -4,13 +4,16 @@ import HeroBanner from "./components/HeroBanner";
 import PointsBanner from "./components/PointsBanner";
 import Promotions from "./components/Promotions";
 import LocationsCoverage from "./components/LocationsCoverage";
+import OrderHistory from "./components/OrderHistory";
 import { ShopProvider } from "./context/ShopContext";
 import "./index.css";
 
-type AppPage = "home" | "locations";
+type AppPage = "home" | "locations" | "orders";
 
 function getPageFromPath(pathname: string): AppPage {
-  return pathname === "/locales" ? "locations" : "home";
+  if (pathname === "/locales") return "locations";
+  if (pathname === "/mis-pedidos") return "orders";
+  return "home";
 }
 
 export default function App() {
@@ -23,7 +26,8 @@ export default function App() {
   }, []);
 
   const navigate = (nextPage: AppPage) => {
-    const nextPath = nextPage === "locations" ? "/locales" : "/";
+    const nextPath =
+      nextPage === "locations" ? "/locales" : nextPage === "orders" ? "/mis-pedidos" : "/";
     if (window.location.pathname !== nextPath) {
       window.history.pushState({}, "", nextPath);
     }
@@ -42,8 +46,10 @@ export default function App() {
               <PointsBanner />
               <Promotions />
             </>
-          ) : (
+          ) : page === "locations" ? (
             <LocationsCoverage />
+          ) : (
+            <OrderHistory />
           )}
         </main>
 

@@ -10,6 +10,7 @@ export interface CartItemOption {
 export interface CartItem {
   id: string;
   productId: number;
+  category: string;
   name: string;
   image: string;
   unitPrice: number;
@@ -19,6 +20,7 @@ export interface CartItem {
 
 interface AddToCartInput {
   productId: number;
+  category: string;
   name: string;
   image: string;
   unitPrice: number;
@@ -39,6 +41,7 @@ interface ShopContextValue {
   addToCart: (item: AddToCartInput) => void;
   updateCartItemQuantity: (itemId: string, quantity: number) => void;
   removeCartItem: (itemId: string) => void;
+  clearCart: () => void;
 }
 
 const ShopContext = createContext<ShopContextValue | null>(null);
@@ -56,7 +59,17 @@ function loadCart(storageKey: string): CartItem[] {
   if (!raw) return [];
 
   try {
-    return JSON.parse(raw) as CartItem[];
+    const parsed = JSON.parse(raw) as Array<Partial<CartItem>>;
+    return parsed.map((item, index) => ({
+      id: item.id ?? `legacy-${index}`,
+      productId: item.productId ?? index,
+      category: item.category ?? "Promociones",
+      name: item.name ?? "Producto",
+      image: item.image ?? "",
+      unitPrice: item.unitPrice ?? 0,
+      quantity: item.quantity ?? 1,
+      options: item.options ?? [],
+    }));
   } catch {
     localStorage.removeItem(storageKey);
     return [];
@@ -118,6 +131,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
           const existingIndex = current.findIndex(
             (cartItem) =>
               cartItem.productId === item.productId &&
+              cartItem.category === item.category &&
               JSON.stringify(cartItem.options) === optionsKey,
           );
 
@@ -134,6 +148,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             {
               id: `${item.productId}-${Date.now()}`,
               productId: item.productId,
+              category: item.category,
               name: item.name,
               image: item.image,
               unitPrice: item.unitPrice,
@@ -152,6 +167,9 @@ export function ShopProvider({ children }: { children: ReactNode }) {
       },
       removeCartItem: (itemId) => {
         setCartItems((current) => current.filter((item) => item.id !== itemId));
+      },
+      clearCart: () => {
+        setCartItems([]);
       },
     };
   }, [cartItems, session, selectedTenantId]);

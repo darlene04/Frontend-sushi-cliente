@@ -11,6 +11,7 @@ interface ProductOption {
 
 interface Product {
   id: number;
+  category: string;
   name: string;
   description: string;
   price: string;
@@ -26,6 +27,7 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
+    category: "Promociones",
     name: "25 makis + 06 alitas + 02 gaseosas",
     description: "Disfruta de 25 makis + 06 alitas + 02 gaseosas a elección (300 ml)",
     price: "S/ 62.90",
@@ -48,6 +50,7 @@ const products: Product[] = [
   },
   {
     id: 2,
+    category: "Promociones",
     name: "1 Poke Bowl (a elección) + 1 bebida de 300 ml",
     description: "Disfruta de nuestro Poke bowl (a elección) + bebida de 300 ml",
     price: "S/ 25.00",
@@ -68,6 +71,7 @@ const products: Product[] = [
   },
   {
     id: 3,
+    category: "Promociones",
     name: "Pack Llaveros Neki",
     description: "Elige tu Neki favorito y regálate un delicioso lleno de cariño. El complemento perfecto para...",
     price: "S/ 29.90",
@@ -134,6 +138,7 @@ export default function Promotions() {
   const addProductToCart = (product: Product, nextQuantity = 1) => {
     addToCart({
       productId: product.id,
+      category: product.category,
       name: product.name,
       image: product.image,
       unitPrice: parsePrice(product.detailPrice),
@@ -186,6 +191,7 @@ export default function Promotions() {
                       event.stopPropagation();
                       addToCart({
                         productId: product.id,
+                        category: product.category,
                         name: product.name,
                         image: product.image,
                         unitPrice: parsePrice(product.detailPrice),
