@@ -1,7 +1,7 @@
 import type { CartItem } from "../context/ShopContext";
 import type { AuthSession } from "./auth";
 
-const API_BASE_URL = "https://27asp5lb3f.execute-api.us-east-1.amazonaws.com/dev";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim();
 
 interface CreateOrderPayload {
   tenantId: string;

@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://27asp5lb3f.execute-api.us-east-1.amazonaws.com/dev";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim();
 
 export interface BackendProductOption {
   name: string;
@@ -7,8 +7,6 @@ export interface BackendProductOption {
   type?: string;
   choices?: string[];
 }
-
-
 
 export interface BackendProduct {
   PK?: string;
