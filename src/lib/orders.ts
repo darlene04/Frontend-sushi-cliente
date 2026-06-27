@@ -13,7 +13,7 @@ interface CreateOrderPayload {
     reference?: string;
   };
   items: Array<{
-    productId: number;
+    productId: string;
     name: string;
     category: string;
     price: number;

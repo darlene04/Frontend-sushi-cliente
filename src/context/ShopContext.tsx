@@ -9,7 +9,7 @@ export interface CartItemOption {
 
 export interface CartItem {
   id: string;
-  productId: number;
+  productId: string;
   category: string;
   name: string;
   image: string;
@@ -19,7 +19,7 @@ export interface CartItem {
 }
 
 interface AddToCartInput {
-  productId: number;
+  productId: string;
   category: string;
   name: string;
   image: string;
@@ -62,7 +62,7 @@ function loadCart(storageKey: string): CartItem[] {
     const parsed = JSON.parse(raw) as Array<Partial<CartItem>>;
     return parsed.map((item, index) => ({
       id: item.id ?? `legacy-${index}`,
-      productId: item.productId ?? index,
+      productId: item.productId ? String(item.productId) : `legacy-${index}`,
       category: item.category ?? "Promociones",
       name: item.name ?? "Producto",
       image: item.image ?? "",
